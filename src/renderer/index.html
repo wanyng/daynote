@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>序日 · 今日计划</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="desktop-background" aria-hidden="true"><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="landscape"></div></div>
+  <main class="app-shell" id="app">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark" data-icon="logo"></span><div>序日<span>DAYNOTE</span></div></div>
+      <div class="sidebar-label">我的空间</div>
+      <nav><button class="nav-item active" id="nav-today"><i data-icon="sun"></i>今日计划<span class="nav-dot"></span></button><button class="nav-item" id="nav-history"><i data-icon="history"></i>历史记录</button></nav>
+      <div class="calendar"><div class="calendar-head"><strong id="month-label"></strong><div><button class="icon-button" id="prev-month" aria-label="上个月"><i data-icon="chevronLeft"></i></button><button class="icon-button" id="next-month" aria-label="下个月"><i data-icon="chevronRight"></i></button></div></div><div class="weekdays"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class="calendar-days" id="calendar-days"></div></div>
+      <div class="sidebar-note"><span class="tiny-line"></span><p>给重要的事，<br>留一点时间。</p></div>
+      <div class="sidebar-bottom"><span class="local-dot"></span><span id="save-status">已保存在本机</span><button class="icon-button" id="settings-button" aria-label="外观设置"><i data-icon="settings"></i></button></div>
+    </aside>
+    <section class="workspace">
+      <div class="window-bar"><span><span class="breadcrumb">我的空间</span><i data-icon="chevronRight"></i><span id="breadcrumb-current">今日计划</span></span><div class="window-actions"><span class="prototype-tag">v0.1.0</span><button class="widget-trigger" id="edit-copy" title="修改标题、寄语和象限说明"><i data-icon="pen"></i><span>编辑文案</span></button><button class="widget-trigger" id="minimize" title="预览最小化后的桌面待办板"><i data-icon="panel"></i><span>桌面待办板</span></button><div class="native-controls"><button data-native="widget" aria-label="最小化到待办板">−</button><button data-native="maximize" aria-label="最大化或还原">□</button><button data-native="close" class="close-native" aria-label="关闭到待办板">×</button></div></div></div>
+      <div class="main-content">
+        <header class="dashboard-header"><div><div class="eyebrow" id="header-date"></div><h1 id="page-title">把今天，安排得刚刚好<span class="title-dot">。</span></h1><p id="page-subtitle">专注重要的事，也照顾生活的小事。</p></div><div class="top-stats"><div class="today-stat"><div class="stat-label">今日完成<i data-icon="checkCircle"></i></div><div class="stat-number"><span id="today-done">3</span><span class="stat-denominator" id="today-total"> / 8</span></div><div class="mini-track"><span id="today-bar"></span></div></div><div class="week-stat"><div class="stat-label">本周执行率<i data-icon="trend"></i></div><div class="stat-number" id="week-rate">56<span class="percent">%</span></div><span class="stat-foot" id="week-range"></span></div></div></header>
+        <div id="dashboard-view">
+          <div class="section-heading"><h2><i data-icon="grid"></i>今日四象限</h2><span>在象限中直接添加，按轻重缓急安排</span></div>
+          <div class="upper-layout"><section class="quadrants" id="quadrants" aria-label="任务四象限"></section><aside class="right-column">
+            <section class="panel reading-card"><div class="card-heading"><h2><i data-icon="book"></i>当前阅读</h2><button class="icon-button" id="edit-book" aria-label="编辑当前阅读"><i data-icon="more"></i></button></div><div class="book-info"><div class="book-cover" aria-hidden="true"><span>READ<br>DEEP.</span><div class="book-lines"></div><small>把时间留给思考</small></div><div class="book-details"><span class="micro-label">正在阅读</span><h3 id="book-title">深度工作</h3><p id="book-author">卡尔·纽波特</p><span class="book-badge">慢慢读，有所获</span></div></div><div class="reading-progress-label"><span id="book-pages">已读 126 / 280 页</span><strong id="book-percent">45%</strong></div><div class="progress-track"><span id="book-bar"></span></div><button class="text-button reading-update" id="update-reading">更新阅读进度<i data-icon="arrowRight"></i></button></section>
+            <section class="panel weekly-card"><div class="card-heading"><h2><i data-icon="chart"></i>本周总览</h2><span class="subtle" id="week-number"></span></div><div class="weekly-counts"><div><strong id="weekly-done">9</strong><span>已完成本周任务</span></div><div><strong id="weekly-total">16</strong><span>本周截止计划</span></div></div><div class="weekly-summary"><div><span>本周总结</span><i data-icon="pen"></i></div><textarea maxlength="10000" id="weekly-note" aria-label="本周总结" placeholder="记录本周的收获，或下周想调整的事…"></textarea></div><div class="week-caption">以本周截止的计划为统计范围</div></section>
+          </aside></div>
+          <section class="goals-section"><div class="section-heading"><h2><i data-icon="target"></i>一点点，向前走</h2><button class="text-button" id="add-goal"><i data-icon="plus"></i>添加板块</button></div><div class="goals-grid" id="goals-grid"></div></section>
+        </div>
+        <section class="history-view" id="history-view" hidden><div class="section-heading"><h2><i data-icon="history"></i>往日计划</h2><span>按计划日期回看，保留完成与未完成记录</span></div><div id="history-list"></div></section>
+        <footer class="app-footer"><span><span class="small-dot"></span>每一个小小的完成，都算数。</span><span id="footer-date"></span></footer>
+      </div>
+    </section>
+  </main>
+  <section class="desktop-widget" id="widget" hidden aria-label="桌面今日待办板"><div class="widget-header" id="widget-drag"><div><span class="widget-overline">DAYNOTE</span><h2>今日待办<span id="widget-date"></span></h2></div><div class="widget-window-controls"><button class="icon-button" id="pin-widget" aria-label="切换始终置顶" aria-pressed="false"><i data-icon="target"></i></button><button class="icon-button" data-native="close" aria-label="收起到托盘"><i data-icon="close"></i></button><button class="icon-button" id="restore" aria-label="展开主窗口"><i data-icon="expand"></i></button></div></div><div class="widget-progress"><span id="widget-progress-text"></span><div class="mini-track"><span id="widget-bar"></span></div></div><div class="widget-list" id="widget-list"></div><form class="widget-add" id="widget-add"><i data-icon="plus"></i><input name="title" placeholder="记下一件要做的事…" aria-label="添加今日待办" maxlength="120" required></form><div class="widget-footer"><span><span class="local-dot"></span>与主窗口同步</span><span id="widget-remaining"></span></div></section>
+  <div class="preview-hint" id="preview-hint" hidden><span>桌面组件预览</span>拖动顶部可调整位置 · 点击右上角展开工作台</div>
+  <dialog id="editor"><form id="editor-form"><div class="dialog-heading"><h2 id="editor-title"></h2><button type="button" class="icon-button" id="close-editor" aria-label="关闭"><i data-icon="close"></i></button></div><div id="editor-fields"></div><div class="dialog-actions"><button type="button" class="secondary-button" id="cancel-editor">取消</button><button type="submit" class="primary-button">保存修改</button></div></form></dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>

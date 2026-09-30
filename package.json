@@ -1,0 +1,49 @@
+{
+  "name": "daynote",
+  "productName": "Daynote",
+  "version": "0.1.0",
+  "description": "序日：支持四象限、阅读目标和桌面待办板的本地 Windows 计划工具",
+  "main": "src/main.cjs",
+  "author": "wanyng",
+  "repository": { "type": "git", "url": "https://github.com/wanyng/daynote.git" },
+  "license": "MIT",
+  "private": true,
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "postinstall": "install-electron",
+    "start": "electron .",
+    "test": "node --test tests/*.test.cjs",
+    "icons": "node scripts/make-icon.cjs",
+    "pack": "npm run icons && electron-builder --win --dir",
+    "dist": "npm run icons && electron-builder --win zip nsis --publish never"
+  },
+  "devDependencies": {
+    "electron": "44.5.1",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "org.daynote.desktop",
+    "productName": "Daynote",
+    "directories": { "output": "dist", "buildResources": "build" },
+    "files": ["src/**/*", "build/icon.png", "package.json", "LICENSE"],
+    "extraFiles": [{ "from": "PORTABLE.txt", "to": "使用说明.txt" }],
+    "asar": true,
+    "electronDist": "node_modules/electron/dist",
+    "afterPack": "scripts/after-pack.cjs",
+    "toolsets": { "nsis": "1.2.1", "winCodeSign": "1.1.0" },
+    "win": { "icon": "build/icon.ico", "target": ["zip", "nsis"], "signExecutable": false },
+    "nsis": {
+      "oneClick": false,
+      "include": "build/remove-files.nsh",
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "allowElevation": false,
+      "packElevateHelper": false,
+      "deleteAppDataOnUninstall": false,
+      "createDesktopShortcut": true,
+      "shortcutName": "序日 Daynote",
+      "artifactName": "Daynote-${version}-Setup.${ext}"
+    },
+    "artifactName": "Daynote-${version}-${arch}.${ext}"
+  }
+}
