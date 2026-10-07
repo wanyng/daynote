@@ -174,6 +174,10 @@ function registerIPC() {
     catch (error) { config.dataDir = previous; throw new Error('数据已复制，但无法保存新目录设置，应用仍使用原目录：' + error.message); }
     app.relaunch(); app.quit(); return { ok: true };
   });
+  handle('book:confirm-delete', async (window, title) => {
+    const answer = await dialog.showMessageBox(window, { type: 'question', title: '移出已读书架', message: '删除这条已读记录？', detail: String(title).slice(0, 80), buttons: ['取消', '删除'], defaultId: 0, cancelId: 0 });
+    return { ok: true, confirmed: answer.response === 1 };
+  });
   handle('task:confirm-delete', async (window, title) => {
     const answer = await dialog.showMessageBox(window, { type: 'question', title: '删除任务', message: '删除这条任务？', detail: String(title).slice(0, 120), buttons: ['取消', '删除'], defaultId: 0, cancelId: 0 });
     return { ok: true, confirmed: answer.response === 1 };

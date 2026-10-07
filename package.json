@@ -1,7 +1,7 @@
 {
   "name": "daynote",
   "productName": "Daynote",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "序日：支持四象限、阅读目标和桌面待办板的本地 Windows 计划工具",
   "main": "src/main.cjs",
   "author": "wanyng",
@@ -26,7 +26,7 @@
     "productName": "Daynote",
     "directories": { "output": "dist", "buildResources": "build" },
     "files": ["src/**/*", "build/icon.png", "package.json", "LICENSE"],
-    "extraFiles": [{ "from": "PORTABLE.txt", "to": "使用说明.txt" }],
+    "extraFiles": [{ "from": "PORTABLE.txt", "to": "使用说明.txt" }, { "from": "build/icon.ico", "to": "Daynote-cat.ico" }],
     "asar": true,
     "electronDist": "node_modules/electron/dist",
     "afterPack": "scripts/after-pack.cjs",

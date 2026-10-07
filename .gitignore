@@ -4,6 +4,7 @@ node_modules/
 .local/
 dist/
 app-portable/
+/cat.png
 data/
 backups/
 runtime/

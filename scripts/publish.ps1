@@ -23,13 +23,13 @@ try {
   } else { Invoke-DaynoteGit remote add origin $Repository }
   $staged = @(Invoke-DaynoteGit diff --cached --name-only)
   if ($staged.Count -gt 0) { throw 'There are already staged files. Review them before publishing.' }
-  Invoke-DaynoteGit add -- .gitignore .github LICENSE PORTABLE.txt README.md package.json package-lock.json scripts src tests
+  Invoke-DaynoteGit add -- .gitignore .github LICENSE PORTABLE.txt README.md package.json package-lock.json scripts src tests assets
   $staged = @(Invoke-DaynoteGit diff --cached --name-only)
-  $unexpected = @($staged | Where-Object { $_ -notmatch '^(\.gitignore|LICENSE|PORTABLE\.txt|README\.md|package(-lock)?\.json|\.github/|scripts/|src/|tests/)' })
+  $unexpected = @($staged | Where-Object { $_ -notmatch '^(\.gitignore|LICENSE|PORTABLE\.txt|README\.md|package(-lock)?\.json|\.github/|scripts/|src/|tests/|assets/)' })
   if ($unexpected.Count -gt 0) { throw 'Unexpected staged files. Review git status before proceeding.' }
   Invoke-DaynoteGit diff --cached --stat
   if ($staged.Count -gt 0) {
-    Invoke-DaynoteGit -c "user.name=$AuthorName" -c "user.email=$AuthorEmail" commit -m 'Initial Daynote desktop app with local storage and widget'
+    Invoke-DaynoteGit -c "user.name=$AuthorName" -c "user.email=$AuthorEmail" commit -m 'Add reading history shelf, local book covers and cat icon'
   }
   Invoke-DaynoteGit push -u origin main
   Write-Host 'Source published successfully. No personal data or build cache was included.' -ForegroundColor Green

@@ -11,5 +11,6 @@ contextBridge.exposeInMainWorld('daynote', {
   openStorage: () => ipcRenderer.invoke('storage:open'),
   exportData: () => ipcRenderer.invoke('data:export'),
   importData: () => ipcRenderer.invoke('data:import'),
-  confirmDelete: title => ipcRenderer.invoke('task:confirm-delete', title)
+  confirmDelete: title => ipcRenderer.invoke('task:confirm-delete', title),
+  confirmBookDelete: title => ipcRenderer.invoke('book:confirm-delete', title)
 });

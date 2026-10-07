@@ -18,7 +18,17 @@ function number(value, min, max) {
   return value;
 }
 function emptyState() {
-  return { version: 1, tasks: [], book: { title: '', author: '', current: 0, total: 1 }, notes: {}, goals: [], opacity: .85, copy: {} };
+  return { version: 1, tasks: [], book: { title: '', author: '', current: 0, total: 1, cover: '' }, finishedBooks: [], notes: {}, goals: [], opacity: .85, copy: {} };
+}
+function coverImage(value = '') {
+  if (value === '') return '';
+  if (typeof value !== 'string' || value.length > 180000) throw new Error('封面图片过大');
+  const match = /^data:image\/(png|jpeg);base64,([A-Za-z0-9+/]+={0,2})$/.exec(value);
+  if (!match) throw new Error('封面图片格式无效');
+  const bytes = Buffer.from(match[2], 'base64');
+  const valid = match[1] === 'png' ? bytes.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])) : bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255;
+  if (!valid) throw new Error('封面图片内容无效');
+  return value;
 }
 function validateState(input) {
   if (!input || input.version !== 1 || !Array.isArray(input.tasks) || !Array.isArray(input.goals)) throw new Error('不是有效的序日数据文件');
@@ -35,6 +45,17 @@ function validateState(input) {
   const book = input.book;
   if (!book) throw new Error('阅读数据缺失');
   const total = number(book.total, 1, 10000000), current = number(book.current, 0, total);
+  const cover = coverImage(book.cover);
+  const finishedIds = new Set();
+  if (input.finishedBooks !== undefined && (!Array.isArray(input.finishedBooks) || input.finishedBooks.length > 500)) throw new Error('已读书架数据无效或超过 500 本');
+  const finishedBooks = (input.finishedBooks || []).map(b => {
+    if (!b || typeof b !== 'object') throw new Error('已读书籍无效');
+    const id = text(b.id, 100), title = text(b.title, 80);
+    if (!id || finishedIds.has(id) || !title.trim() || !validDate(b.finishedOn)) throw new Error('已读书籍编号、书名或日期无效');
+    finishedIds.add(id);
+    return { id, title, author: text(b.author, 60), total: number(b.total ?? 1, 1, 10000000), finishedOn: b.finishedOn, cover: coverImage(b.cover) };
+  });
+  if (finishedBooks.reduce((size, b) => size + b.cover.length, cover.length) > 16 * 1024 * 1024) throw new Error('书架封面总量超过限制，请移除一些封面后重试');
   const goalIds = new Set();
   const goals = input.goals.map(g => {
     const id = text(g.id, 100);
@@ -52,7 +73,7 @@ function validateState(input) {
   if (input.copy && typeof input.copy === 'object' && !Array.isArray(input.copy)) {
     for (const [key, value] of Object.entries(input.copy)) if (/^[a-zA-Z0-9]{1,40}$/.test(key) && !['constructor', 'prototype', '__proto__'].includes(key)) copy[key] = text(value, 120);
   }
-  return { version: 1, tasks, book: { title: text(book.title, 80), author: text(book.author, 60), current, total }, goals, notes, copy, opacity: number(input.opacity ?? .85, .4, .95) };
+  return { version: 1, tasks, book: { title: text(book.title, 80), author: text(book.author, 60), current, total, cover }, finishedBooks, goals, notes, copy, opacity: number(input.opacity ?? .85, .4, .95) };
 }
 function atomicWrite(file, data) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -99,7 +120,7 @@ class Store {
   }
   export(file) { atomicWrite(file, this.state); }
   import(file) {
-    if (fs.statSync(file).size > 20 * 1024 * 1024) throw new Error('导入文件过大');
+    if (fs.statSync(file).size > 64 * 1024 * 1024) throw new Error('导入文件过大');
     const next = validateState(JSON.parse(fs.readFileSync(file, 'utf8')));
     const archive = path.join(this.root, 'backups', 'before-import-' + Date.now() + '.json');
     atomicWrite(archive, this.state);
